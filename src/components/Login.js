@@ -22,7 +22,10 @@ export const Login = (props) => {
         alert("Incorrect username or password");
       } else {
         props.setToken(res.data.token);
-        
+        console.log(res.data)
+        document.cookie = `id=${res.data.id};max-age=60000`
+        document.cookie = `name=${res.data.name};max-age=60000`
+        document.cookie = `token=${res.data.token};max-age=60000`
         navigate("/recipes"); // Navigate only if token is valid
       }
     } catch (err) {

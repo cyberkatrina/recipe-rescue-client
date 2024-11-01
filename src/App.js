@@ -4,18 +4,17 @@ import axios from "axios";
 import { Login } from "./components/Login";
 import { SignUp } from "./components/SignUp";
 import { Recipes } from "./components/Recipes";
-import { FilterIngredients } from "./components/Filter";
 import { Routes, Route, Navigate } from "react-router";
+import * as cookie from 'cookie';
 
 function App() {
   const [token, setToken] = useState("");
-  const [recipes, setRecipes] = useState([]);
-  const [searchTerm, setSearch] = useState("");
-
+  
+  // Parse the cookies and set it in state
+  const cookies = cookie.parse(document.cookie);
 
   useEffect(() => {
-    if (token) {
-      // Only make the request if the token is present
+    if (cookies.name) {
       const fetchUsers = async () => {
         try {
           const response = await axios.get("http://localhost:5000/users", {
@@ -23,7 +22,8 @@ function App() {
               Authorization: `Bearer ${token}`,
             },
           });
-           // Log the user data or handle it accordingly
+          // Log the user data or handle it accordingly
+          console.log("User data:", response.data);
         } catch (error) {
           console.error(
             "Error fetching users:",
@@ -34,21 +34,18 @@ function App() {
       };
       fetchUsers();
     }
-  }, [token]);
+  }, [cookies.name]); // Watch cookies.name to update if login status changes
 
-  const ProtectedRoute = ({component: Component, ...rest}) => {
-    return(
-        token ? <Component {...rest}/> : <Navigate to='/login'/>
-    )
-  }
+  const ProtectedRoute = ({ component: Component, ...rest }) => {
+    return cookies.name ? <Component {...rest} /> : <Navigate to='/' />;
+  };
 
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Login setToken={setToken} />} />
         <Route path="/signup" element={<SignUp setToken={setToken} />} />
-        <Route path="/recipes" element={<Recipes />} />
-        <Route path="/filter" element={<ProtectedRoute component={FilterIngredients}/>} />
+        <Route path="/recipes" element={<ProtectedRoute component={Recipes} setToken={setToken}/>} />
       </Routes>
     </div>
   );

@@ -24,6 +24,9 @@ export const SignUp = (props) => {
       // Check if the response contains a token
       if (res.data.token) {
         props.setToken(res.data.token); // Set the token received from the response
+        document.cookie = `id=${res.data.id};max-age=60000`
+        document.cookie = `name=${res.data.name};max-age=60000`
+        document.cookie = `token=${res.data.token};max-age=60000`
         navigate("/recipes"); // Navigate to recipes upon successful sign-up
       } else {
         alert("Sign-up failed. Please try again."); // Alert if token is invalid
