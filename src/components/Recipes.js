@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import recipes from "../recipes_data.json";
 import { styled } from "@mui/material/styles";
-import axios from "axios"; // import axios for HTTP requests
+import axios from "axios";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -36,12 +36,13 @@ export function Recipes() {
   const [likedRecipes, setLikedRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
   const [input, setInput] = useState("");
+  const [viewLikedOnly, setViewLikedOnly] = useState(false); // New state for liked-only view
   const itemsPerPage = 27;
 
   const cookies = cookie.parse(document.cookie);
   const userId = cookies.id;
 
-  // Update the effect to fetch liked recipes
+  // Fetch liked recipes when the component mounts
   useEffect(() => {
     const fetchLikedRecipes = async () => {
       try {
@@ -53,8 +54,7 @@ export function Recipes() {
             },
           }
         );
-        const user = response.data[0]; // Assuming the user data is an array
-
+        const user = response.data[0];
         const likes = Array.isArray(user.likes)
           ? user.likes
           : user.likes
@@ -67,40 +67,15 @@ export function Recipes() {
       }
     };
 
-    fetchLikedRecipes(); // Fetch liked recipes on component mount
+    fetchLikedRecipes();
   }, [userId, cookies.token]);
 
-  // Save likes to the database
-  useEffect(() => {
-    const saveLikesToDatabase = async (likedRecipes) => {
-      if (likedRecipes.length === 0) {
-        return; // No likes to save
-      }
-
-      try {
-        await axios.put(
-          `http://localhost:5000/users/${userId}/likes`,
-          { likes: likedRecipes },
-          {
-            headers: {
-              Authorization: `Bearer ${cookies.token}`,
-            },
-          }
-        );
-      } catch (error) {
-        console.error("Failed to save likes:", error);
-      }
-    };
-
-    if (likedRecipes.length > 0) {
-      saveLikesToDatabase(likedRecipes); // Save to database only if there are likes
-    }
-  }, [likedRecipes, userId, cookies.token]);
-
+  // Handle the change in the search input field
   const handleChange = (e) => {
     setInput(e.target.value);
   };
 
+  // Handle the filtering by ingredients
   const handleFilter = (e) => {
     e.preventDefault();
     const ingredientArray = input
@@ -109,7 +84,6 @@ export function Recipes() {
       .map((item) => item.trim());
 
     const filtered = recipes.filter((recipe) => {
-      // Check if the recipe contains the extendedIngredients array
       if (recipe.recipes[0]?.extendedIngredients) {
         return ingredientArray.every((ingredient) => {
           return recipe.recipes[0].extendedIngredients.some((item) => {
@@ -117,17 +91,14 @@ export function Recipes() {
           });
         });
       }
-      return false; // Return false if extendedIngredients is not found
+      return false;
     });
 
     setFilteredRecipes(filtered);
-    setCurrentPage(0); // Reset to first page when filtering
+    setCurrentPage(0);
   };
 
-  const handleExpandClick = (index) => {
-    setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
-  };
-
+  // Toggle for liking or unliking a recipe
   const handleLikeClick = (recipeId) => {
     setLikedRecipes((prevLikedRecipes) => {
       const isLiked = prevLikedRecipes.includes(recipeId);
@@ -137,6 +108,7 @@ export function Recipes() {
     });
   };
 
+  // Cut off the recipe description at the third period
   const cutOffAtThirdPeriod = (text) => {
     const firstPeriodIndex = text.indexOf(". ");
     const secondPeriodIndex = text.indexOf(". ", firstPeriodIndex + 1);
@@ -144,15 +116,20 @@ export function Recipes() {
     return thirdPeriodIndex !== -1 ? text.slice(0, thirdPeriodIndex + 1) : text;
   };
 
-  // Determine the items to display based on filtering
-  const currentItems = filteredRecipes.length > 0
+  // Get the current items based on filtering and liked-only view
+  const currentItems = viewLikedOnly
+    ? filteredRecipes.filter((recipe) =>
+        likedRecipes.includes(recipe.recipes[0].id)
+      )
+    : filteredRecipes.length > 0
     ? filteredRecipes.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
     : recipes.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
+  // Handle pagination
   return (
     <>
-      <div style={{backgroundColor: "#F2D4C6"}}>
-        <h2 style={{marginTop: 0}}>Filter Recipes by Ingredients</h2>
+      <div style={{ backgroundColor: "#F2D4C6", padding: '10px 0' }}>
+        <h2 style={{ marginTop: 10 }}>Filter Recipes by Ingredients</h2>
         <form onSubmit={handleFilter}>
           <label>
             Enter ingredients (comma separated):
@@ -160,6 +137,11 @@ export function Recipes() {
           </label>
           <button type="submit">Filter</button>
         </form>
+
+        {/* New Toggle Button for Liked Recipes */}
+        <button onClick={() => setViewLikedOnly((prev) => !prev)}>
+          {viewLikedOnly ? "Show All Recipes" : "Show Liked Recipes"}
+        </button>
 
         <div
           style={{
@@ -190,7 +172,7 @@ export function Recipes() {
               />
               <CardMedia
                 component="img"
-                height="140" // Set fixed height for images
+                height="140"
                 image={recipe.recipes[0].image}
                 alt={recipe.recipes[0].title}
               />
@@ -221,7 +203,7 @@ export function Recipes() {
                 </IconButton>
                 <ExpandMore
                   expand={!!expanded[index]}
-                  onClick={() => handleExpandClick(index)}
+                  onClick={() => setExpanded((prev) => ({ ...prev, [index]: !prev[index] }))}
                   aria-expanded={!!expanded[index]}
                   aria-label="show more"
                 >
@@ -247,7 +229,9 @@ export function Recipes() {
         </div>
 
         <ReactPaginate
-          pageCount={Math.ceil((filteredRecipes.length > 0 ? filteredRecipes.length : recipes.length) / itemsPerPage)}
+          pageCount={Math.ceil(
+            (filteredRecipes.length > 0 ? filteredRecipes.length : recipes.length) / itemsPerPage
+          )}
           pageRangeDisplayed={5}
           marginPagesDisplayed={2}
           onPageChange={(selected) => setCurrentPage(selected.selected)}

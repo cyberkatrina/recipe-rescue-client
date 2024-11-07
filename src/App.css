@@ -2,16 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
 .App-header {
   background-color: #282c34;
@@ -35,14 +25,25 @@
 }
 
 .bg1 {
-  background-image: url('../public/bg.png'); /* Path to your image */
+  background-image: url('../public/bg_final.png'); /* Path to your image */
   background-size: cover; /* Ensures image covers the entire area */
-  background-position: center; /* Centers the image */
+  background-position: center 80%; /* Centers the image */
   background-repeat: no-repeat; /* Prevents the image from repeating */
-  height: 92vh; /* Full viewport height */
+  height: 92vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
+  position: relative;
+}
+
+.form-container {
+  margin-top: -140px;
+}
+
+.form-container2 {
+  margin-top: -60px;
 }
 
 .form {
@@ -53,11 +54,11 @@
   border-radius: 24px; /* Less rounded for a modern look */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow for more depth */
   max-width: 600px; /* Limit width for better readability */
-  margin: -70px auto 20px;
+  margin: -40px auto 0px;
 }
 
 .form label {
-  text-align: center; /* Center align the heading */
+  text-align: left;
   margin-bottom: 20px; /* Space below the heading */
   font-family: 'Arial', sans-serif; /* Set a modern font */
   color: #333; /* Darker text color for better contrast */
@@ -67,19 +68,29 @@
   border: 1px solid #ddd; /* Light border */
   border-radius: 12px; /* Rounded corners for inputs */
   padding: 10px; /* Padding inside inputs */
-  margin-bottom: 15px; /* Space between inputs */
+  margin-bottom: 5px; /* Space between inputs */
   font-size: 16px; /* Larger text size for readability */
   transition: border-color 0.3s ease; /* Smooth transition for border color */
+  width: 100%; /* Full width to align with the container */
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
 }
 
-.form input:focus {
-  border-color: #007BFF; /* Change border color on focus */
-  outline: none; /* Remove default outline */
+.title1 {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #4B553C;
+  text-align: center;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 1%; /* Position title towards the top */text-shadow: 
+  -1px -1px 0 white,
+  1px -1px 0 white,
+  -1px 1px 0 white,
+  1px 1px 0 white,
+  2px 2px 8px rgba(0, 0, 0, 0.2);
+
 }
 
-.app-bar {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-}
 
 .menu-icon {
   margin-right: 16px; /* Space between menu icon and title */
@@ -145,12 +156,3 @@
   pointer-events: none; /* Disable pointer events */
 }
 
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

@@ -45,21 +45,24 @@ export const SignUp = (props) => {
 
   return (
     <div className="bg1">
-      <form className="form" onSubmit={handleSubmit}>
-        <label>
-          Name: 
-          <input type='text' value={name} onChange={(e) => {setName(e.target.value)}} required/>
-        </label>
-        <label>
-          Email: 
-          <input type='email' value={email} onChange={(e) => {setEmail(e.target.value)}} required/>
-        </label>
-        <label>
-          Password: 
-          <input type='password' value={password} onChange={(e) => {setPassword(e.target.value)}} required/>
-        </label>
-        <input type="submit" value="Sign Up" />
-      </form>
+      <h1 className="title1">Recipe Rescue</h1>
+      <div className="form-container2">
+        <form className="form" onSubmit={handleSubmit}>
+          <label>
+            Name: 
+            <input type='text' value={name} onChange={(e) => {setName(e.target.value)}} required/>
+          </label>
+          <label>
+            Email: 
+            <input type='email' value={email} onChange={(e) => {setEmail(e.target.value)}} required/>
+          </label>
+          <label>
+            Password: 
+            <input type='password' value={password} onChange={(e) => {setPassword(e.target.value)}} required/>
+          </label>
+          <input type="submit" value="Sign Up" />
+        </form>
+      </div>
     </div>
   )
 }

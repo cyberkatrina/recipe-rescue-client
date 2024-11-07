@@ -35,28 +35,30 @@ export const Login = (props) => {
 
   return (
     <div className="bg1">
-      
-      <form className="form" onSubmit={handleSubmit}>
-        <label>
-          Email: 
-          <input 
-            type='email' 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required // Optional: Makes the field required
-          />
-        </label>
-        <label>
-          Password: 
-          <input 
-            type='password' 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required // Optional: Makes the field required
-          />
-        </label>
-        <input type="submit" value="Login" />
-      </form>
+      <h1 className="title1">Recipe Rescue</h1>
+      <div className="form-container">
+        <form className="form" onSubmit={handleSubmit}>
+          <label>
+            Email:
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
+          <label>
+            Password:
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+          <input type="submit" value="Login" />
+        </form>
+      </div>
     </div>
   );
 };

@@ -36,20 +36,20 @@ const Navigation = () => {
       className="app-bar"
     >
       <Toolbar>
-        <IconButton
+        {/* <IconButton
           edge="start"
           color="inherit"
           aria-label="menu"
           className="menu-icon"
         >
           <MenuIcon />
-        </IconButton>
+        </IconButton> */}
 
         <Typography variant="h6" className="title">
           Recipe Rescue
         </Typography>
 
-        {isLoggedIn ? <span>Welcome, {isLoggedIn}</span> : <span></span>}
+        {isLoggedIn ? <span style={{marginRight: "10%"}}>Welcome, {isLoggedIn}</span> : <span></span>}
 
         <Box component="nav" className="nav-links">
           {!isLoggedIn ? (
@@ -82,7 +82,7 @@ const Navigation = () => {
               Logout
             </Button>
           )}
-          {isLoggedIn ? (
+          {/* {isLoggedIn ? (
             <Button
               component={Link}
               to="/recipes"
@@ -93,7 +93,7 @@ const Navigation = () => {
             </Button>
           ) : (
             <span></span>
-          )}
+          )} */}
         </Box>
       </Toolbar>
     </AppBar>
